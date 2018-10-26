@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 @Entity
@@ -19,11 +20,17 @@ public class Server {
     private Integer id;
     private String serverName;
     private String serverAddress;
-    //private String version;
+    private String version;
 
     public Server(String serverName, String serverAddress) {
         this.serverName = serverName;
         this.serverAddress = serverAddress;
+        try {
+            version = this.getVersion();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public Server() {
@@ -46,58 +53,44 @@ public class Server {
         this.id = id;
     }
 
-    public String getServerAdress() {
+    public String getServerAddress() {
         return serverAddress;
     }
 
-    public void setServerAdress(String serverAdress) {
-        this.serverAddress = serverAdress;
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
+ //Open connection and try to get version from server address
 
-   /* public String getVersion() {
-        return version;
+    public String getVersion() throws IOException {
+        URL obj;
+        String vers = null;
+
+        obj = new URL(serverAddress+"//get_server_info.jsp");
+        HttpURLConnection connection;
+
+        connection = (HttpURLConnection) obj.openConnection();
+        connection.setRequestMethod("GET");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        vers = response.toString()
+                                .substring(response.toString()
+                                                .indexOf("<version>")+9,
+                                        response.toString()
+                                                .indexOf("/version"));
+        return vers;
     }
 
     public void setVersion(String version) {
         this.version = version;
-    }*/
-
-
-
-    /*URL obj;
-
-    {
-        try {
-            obj = new URL(serverAddress);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
     }
-    HttpURLConnection connection;
-    {
-        try {
-            connection = (HttpURLConnection) obj.openConnection();
-            connection.setRequestMethod("GET");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            String vers = response.toString()
-                    .substring(response.toString()
-                                    .indexOf("<version>")+9,
-                    response.toString()
-                            .indexOf("/version"));
-            setVersion(vers);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
 
 
 }

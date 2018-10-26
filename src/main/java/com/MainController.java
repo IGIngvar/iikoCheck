@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -32,6 +33,17 @@ public class MainController {
         serverRepo.save(server);
         Iterable<Server> servers = serverRepo.findAll();
         model.put("servers", servers);
+        String vers = null;
+        try {
+            vers = server.getVersion();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(vers == null){
+            model.put("version", "null, sorry");
+        } else {
+            model.put("version", vers);
+        }
 
         return "main";
     }
