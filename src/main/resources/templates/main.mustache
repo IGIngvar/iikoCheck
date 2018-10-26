@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+<div>
+<form method="post">
+<input type="text" name="serverName" placeholder="Введите имя сервера" />
+<input type="text" name="serverAddress" placeholder="Адрес сервера"/>
+<button type="submit">Добавить</button>
+</form>
+</div>
+
+<div>Список серверов</div>
+{{#servers}}
+<div>
+<b>{{id}}</b>
+<span>{{serverName}}</span>
+<span>{{serverAddress}}</span>
+</div>
+{{/servers}}
+</body>
+</html>
