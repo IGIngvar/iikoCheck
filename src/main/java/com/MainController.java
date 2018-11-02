@@ -32,7 +32,6 @@ public class MainController {
 
         serverRepo.save(server);
         Iterable<Server> servers = serverRepo.findAll();
-        model.put("servers", servers);
         String vers = null;
         try {
             vers = server.getVersion();
@@ -44,6 +43,8 @@ public class MainController {
         } else {
             model.put("version", vers);
         }
+        model.put("servers", servers);
+
 
         return "main";
     }

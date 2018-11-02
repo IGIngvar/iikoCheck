@@ -26,9 +26,10 @@ public class Server {
         this.serverName = serverName;
         this.serverAddress = serverAddress;
         try {
-            version = this.getVersion();
+            this.version = this.getVersion();
         } catch (IOException e) {
             e.printStackTrace();
+            this.version=null;
         }
 
     }
@@ -62,11 +63,12 @@ public class Server {
     }
  //Open connection and try to get version from server address
 
-    public String getVersion() throws IOException {
+     public String getVersion() throws IOException {
         URL obj;
         String vers = null;
+        String status = null;
 
-        obj = new URL(serverAddress+"//get_server_info.jsp");
+        obj = new URL("http://"+serverAddress+"/resto/get_server_info.jsp");
         HttpURLConnection connection;
 
         connection = (HttpURLConnection) obj.openConnection();
@@ -80,11 +82,17 @@ public class Server {
             response.append(inputLine);
         }
         in.close();
-        vers = response.toString()
+        vers  = response.toString()
                                 .substring(response.toString()
                                                 .indexOf("<version>")+9,
                                         response.toString()
-                                                .indexOf("/version"));
+                                                .indexOf("</version>"));
+        status = response.toString().substring(response.toString()
+                                                .indexOf("<serverState>")+13,
+                response.toString().indexOf("</serverState>")
+        );
+        vers += " Server status : " + status;
+
         return vers;
     }
 
